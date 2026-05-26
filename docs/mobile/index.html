@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
 		<title>pathfinder</title>
@@ -92,8 +93,8 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<meta name="screen-orientation" content="landscape"><style id="pf-mobile-orientation">#pf-rotate-gate.pf-hidden{display:none!important;}html.pf-portrait,html.pf-portrait body{overflow:hidden;background:#000;}html.pf-portrait #canvas{visibility:hidden;}</style>
-<script>(function(){var L="landscape";function ok(){return window.innerWidth>window.innerHeight;}function gate(on){var g=document.getElementById("pf-rotate-gate");if(g)g.classList.toggle("pf-hidden",!on);document.documentElement.classList.toggle("pf-portrait",on);}function lock(){if(!ok())return;var o=screen.orientation;if(o&&o.lock)o.lock(L).catch(function(){});}var wasLandscape=ok();function onGeom(){var now=ok();gate(!now);if(now)lock();if(window.__pfGameStarted&&wasLandscape!==now){location.reload();return;}wasLandscape=now;if(now&&window.__pfTryStartGame)window.__pfTryStartGame();}window.addEventListener("resize",onGeom);window.addEventListener("orientationchange",function(){setTimeout(onGeom,250);});document.addEventListener("pointerdown",lock,{once:true,capture:true});onGeom();})();</script>
+<meta name="screen-orientation" content="landscape"><style id="pf-mobile-orientation">#pf-rotate-gate.pf-hidden{display:none!important;}html.pf-portrait,html.pf-portrait body{overflow:hidden;background:#000;margin:0;}html.pf-portrait #canvas,html.pf-portrait #status{display:none!important;}html.pf-portrait #pf-rotate-gate{display:flex!important;}html.pf-portrait #pf-rotate-gate.pf-hidden{display:flex!important;}</style>
+<script>(function(){var L="landscape";var mqlP=window.matchMedia?window.matchMedia("(orientation: portrait)"):null;var mqlL=window.matchMedia?window.matchMedia("(orientation: landscape)"):null;window.__pfIsLandscape=function(){if(mqlP&&mqlP.matches)return false;if(mqlL&&mqlL.matches)return true;if(screen.orientation&&screen.orientation.type)return screen.orientation.type.indexOf("landscape")===0;return window.innerWidth>window.innerHeight;};function gate(isPortrait){document.documentElement.classList.toggle("pf-portrait",isPortrait);var g=document.getElementById("pf-rotate-gate");if(isPortrait&&g)g.classList.remove("pf-hidden");}function lock(){if(!window.__pfIsLandscape())return;var o=screen.orientation;if(o&&o.lock)o.lock(L).catch(function(){});}var prevLandscape=window.__pfIsLandscape();function onGeom(){var now=window.__pfIsLandscape();gate(!now);if(now)lock();if(window.__pfGameStarted&&prevLandscape!==now){location.reload();return;}prevLandscape=now;if(!now)return;if(window.__pfTryStartGame)window.__pfTryStartGame();}if(mqlP&&mqlP.addEventListener)mqlP.addEventListener("change",onGeom);if(mqlL&&mqlL.addEventListener)mqlL.addEventListener("change",onGeom);window.addEventListener("resize",onGeom);window.addEventListener("orientationchange",function(){setTimeout(onGeom,100);setTimeout(onGeom,400);});document.addEventListener("pointerdown",lock,{once:true,capture:true});onGeom();})();</script>
 	<style>html,body{margin:0;padding:0;touch-action:none;overscroll-behavior:none;}canvas,#canvas,#gameCanvas{touch-action:none;}</style>
 </head>
 	<body>
@@ -114,7 +115,7 @@ body {
 
 		<script src="index.js?v=0.6.29"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83403548,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83404444,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -165,20 +166,17 @@ const engine = new Engine(GODOT_CONFIG);
 		initializing = false;
 	}
 
-	window.__pfIsLandscape = function () {
-		return window.innerWidth > window.innerHeight;
-	};
 	var __pfGameStarted = false;
 	window.__pfTryStartGame = function () {
-		if (!window.__pfIsLandscape()) {
-			return Promise.resolve();
+		if (!window.__pfIsLandscape || !window.__pfIsLandscape()) {
+			return Promise.resolve(false);
 		}
 		var gate = document.getElementById('pf-rotate-gate');
 		if (gate) {
 			gate.classList.add('pf-hidden');
 		}
 		if (__pfGameStarted) {
-			return Promise.resolve();
+			return Promise.resolve(true);
 		}
 		__pfGameStarted = true;
 		window.__pfGameStarted = true;
@@ -193,9 +191,10 @@ const engine = new Engine(GODOT_CONFIG);
 					statusProgress.removeAttribute('max');
 				}
 			},
+		}).then(function () {
+			return true;
 		});
 	};
-
 	const missing = Engine.getMissingFeatures({
 		threads: GODOT_THREADS_ENABLED,
 	});
@@ -230,10 +229,10 @@ const engine = new Engine(GODOT_CONFIG);
 			// Display the message as usual
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
-		}
-	} else {
-		window.__pfTryStartGame().then(() => {
-			setStatusMode('hidden');
+		} else {`n		window.__pfTryStartGame().then((started) => {
+			if (started) {
+				setStatusMode('hidden');
+			}
 		}, displayFailureNotice);
 	}
 }());

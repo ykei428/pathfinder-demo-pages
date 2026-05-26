@@ -116,9 +116,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.js?v=0.6.29"></script>
+		<script src="index.js?v=0.6.31"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83406188,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83409612,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -184,6 +184,9 @@ const engine = new Engine(GODOT_CONFIG);
 		statusMode = 'hidden';
 	};
 	window.__pfDisplayFailure = displayFailureNotice;
+	window.__pfOnGameReady = function () {
+		window.__pfSetStatusHidden();
+	};
 	window.__pfTryStartGame = function () {
 		if (!window.__pfIsLandscape || !window.__pfIsLandscape()) {
 			return Promise.resolve(false);
@@ -206,7 +209,6 @@ const engine = new Engine(GODOT_CONFIG);
 				}
 			},
 		}).then(function () {
-			window.__pfSetStatusHidden();
 			return true;
 		});
 	};

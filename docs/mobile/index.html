@@ -92,7 +92,7 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-
+<meta name="screen-orientation" content="landscape"><style id="pf-mobile-orientation">@media (orientation:portrait){html,body{overflow:hidden;}#canvas{visibility:hidden;}}</style><script>(function(){var L="landscape";function ok(){return window.innerWidth>window.innerHeight;}function lock(){if(!ok())return;var o=screen.orientation;if(o&&o.lock)o.lock(L).catch(function(){});}function sync(){document.documentElement.classList.toggle("pf-portrait",!ok());if(ok())lock();}window.addEventListener("resize",sync);window.addEventListener("orientationchange",function(){setTimeout(sync,200);});document.addEventListener("pointerdown",lock,{once:true,capture:true});sync();})();</script>
 	<style>html,body{margin:0;padding:0;touch-action:none;overscroll-behavior:none;}canvas,#canvas,#gameCanvas{touch-action:none;}</style>
 </head>
 	<body>
@@ -112,7 +112,7 @@ body {
 
 		<script src="index.js?v=0.6.29"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83402524,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83403756,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

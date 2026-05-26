@@ -229,7 +229,9 @@ const engine = new Engine(GODOT_CONFIG);
 			// Display the message as usual
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
-		} else {`n		window.__pfTryStartGame().then((started) => {
+		}
+	} else {
+		window.__pfTryStartGame().then((started) => {
 			if (started) {
 				setStatusMode('hidden');
 			}

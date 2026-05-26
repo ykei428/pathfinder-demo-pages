@@ -167,8 +167,18 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 
 	var __pfGameStarted = false;
+	var __pfHideSplashDone = false;
 	window.__pfSetStatusHidden = function () {
-		setStatusMode('hidden');
+		if (__pfHideSplashDone) {
+			return;
+		}
+		__pfHideSplashDone = true;
+		var overlay = document.getElementById('status');
+		if (overlay && overlay.parentNode) {
+			overlay.parentNode.removeChild(overlay);
+		}
+		initializing = false;
+		statusMode = 'hidden';
 	};
 	window.__pfDisplayFailure = displayFailureNotice;
 	window.__pfTryStartGame = function () {
@@ -176,6 +186,7 @@ const engine = new Engine(GODOT_CONFIG);
 			return Promise.resolve(false);
 		}
 		if (__pfGameStarted) {
+			window.__pfSetStatusHidden();
 			return Promise.resolve(true);
 		}
 		__pfGameStarted = true;
@@ -186,12 +197,16 @@ const engine = new Engine(GODOT_CONFIG);
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
 					statusProgress.max = total;
+					if (current >= total) {
+						window.__pfSetStatusHidden();
+					}
 				} else {
 					statusProgress.removeAttribute('value');
 					statusProgress.removeAttribute('max');
 				}
 			},
 		}).then(function () {
+			window.__pfSetStatusHidden();
 			return true;
 		});
 	};

@@ -165,6 +165,37 @@ const engine = new Engine(GODOT_CONFIG);
 		initializing = false;
 	}
 
+	window.__pfIsLandscape = function () {
+		return window.innerWidth > window.innerHeight;
+	};
+	var __pfGameStarted = false;
+	window.__pfTryStartGame = function () {
+		if (!window.__pfIsLandscape()) {
+			return Promise.resolve();
+		}
+		var gate = document.getElementById('pf-rotate-gate');
+		if (gate) {
+			gate.classList.add('pf-hidden');
+		}
+		if (__pfGameStarted) {
+			return Promise.resolve();
+		}
+		__pfGameStarted = true;
+		window.__pfGameStarted = true;
+		setStatusMode('progress');
+		return engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		});
+	};
+
 	const missing = Engine.getMissingFeatures({
 		threads: GODOT_THREADS_ENABLED,
 	});
@@ -200,7 +231,7 @@ const engine = new Engine(GODOT_CONFIG);
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
-		} else {
+	} else {
 		window.__pfTryStartGame().then(() => {
 			setStatusMode('hidden');
 		}, displayFailureNotice);

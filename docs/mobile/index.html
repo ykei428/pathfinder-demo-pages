@@ -93,8 +93,8 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<meta name="screen-orientation" content="landscape"><style id="pf-mobile-orientation">html.pf-portrait,html.pf-portrait body{overflow:hidden;background:#000;margin:0;}html.pf-portrait #canvas,html.pf-portrait #status{display:none!important;}html.pf-portrait #pf-rotate-gate{display:flex!important;}html:not(.pf-portrait) #pf-rotate-gate{display:none!important;}</style>
-<script>(function(){var L="landscape";var reloadTimer=0;window.__pfIsLandscape=function(){var w=window.innerWidth||0;var h=window.innerHeight||0;if(w>=h)return true;if(screen.orientation&&screen.orientation.type)return screen.orientation.type.indexOf("landscape")>=0;return false;};function setPortraitMode(on){document.documentElement.classList.toggle("pf-portrait",on);var sub=document.getElementById("pf-rotate-gate-sub");if(sub){sub.textContent=window.__pfGameStarted?"Turn back to landscape to continue playing":"The page will refresh once you are in landscape";}}function lock(){if(!window.__pfIsLandscape())return;var o=screen.orientation;if(o&&o.lock)o.lock(L).catch(function(){});}function scheduleReload(){if(reloadTimer)return;reloadTimer=window.setTimeout(function(){location.reload();},250);}var prevLandscape=window.__pfIsLandscape();window.__pfOnOrientationChange=function(){var now=window.__pfIsLandscape();setPortraitMode(!now);if(now)lock();if(now&&!prevLandscape&&!window.__pfGameStarted){prevLandscape=now;scheduleReload();return;}prevLandscape=now;if(!now)return;if(window.__pfTryStartGame){window.__pfTryStartGame().then(function(started){if(started&&window.__pfSetStatusHidden)window.__pfSetStatusHidden();},function(err){if(window.__pfDisplayFailure)window.__pfDisplayFailure(err);});}};window.addEventListener("resize",window.__pfOnOrientationChange);window.addEventListener("orientationchange",function(){setTimeout(window.__pfOnOrientationChange,150);setTimeout(window.__pfOnOrientationChange,500);});document.addEventListener("pointerdown",lock,{once:true,capture:true});})();</script>
+<meta name="screen-orientation" content="landscape"><style id="pf-mobile-orientation">html.pf-portrait,html.pf-portrait body{overflow:hidden;background:#000;margin:0;}html.pf-portrait #pf-rotate-gate{display:flex!important;}html:not(.pf-portrait) #pf-rotate-gate{display:none!important;}</style>
+<script>(function(){var L="landscape";var reloadTimer=0;var portraitStreak=0;window.__pfIsLandscape=function(){var w=window.innerWidth||0;var h=window.innerHeight||0;if(w>=h&&w>0)return true;if(screen.orientation&&screen.orientation.type)return screen.orientation.type.indexOf("landscape")>=0;return false;};function setPortraitMode(on){document.documentElement.classList.toggle("pf-portrait",on);var sub=document.getElementById("pf-rotate-gate-sub");if(sub){sub.textContent=window.__pfGameStarted?"Turn back to landscape to continue playing":"The page will refresh once you are in landscape";}}function lock(){if(!window.__pfIsLandscape())return;var o=screen.orientation;if(o&&o.lock)o.lock(L).catch(function(){});}function scheduleReload(){if(reloadTimer)return;reloadTimer=window.setTimeout(function(){location.reload();},250);}var prevLandscape=window.__pfIsLandscape();window.__pfOnOrientationChange=function(){var now=window.__pfIsLandscape();if(now){portraitStreak=0;setPortraitMode(false);}else{portraitStreak+=1;if(portraitStreak<2&&!window.__pfGameStarted){return;}setPortraitMode(true);}if(now)lock();if(now&&!prevLandscape&&!window.__pfGameStarted){prevLandscape=now;scheduleReload();return;}prevLandscape=now;if(!now)return;if(window.__pfTryStartGame){window.__pfTryStartGame().then(function(started){if(started&&window.__pfSetStatusHidden)window.__pfSetStatusHidden();},function(err){if(window.__pfDisplayFailure)window.__pfDisplayFailure(err);});}};window.addEventListener("resize",window.__pfOnOrientationChange);window.addEventListener("orientationchange",function(){portraitStreak=0;setTimeout(window.__pfOnOrientationChange,150);setTimeout(window.__pfOnOrientationChange,500);});document.addEventListener("pointerdown",lock,{once:true,capture:true});setPortraitMode(!window.__pfIsLandscape());})();</script>
 	<style>html,body{margin:0;padding:0;touch-action:none;overscroll-behavior:none;}canvas,#canvas,#gameCanvas{touch-action:none;}</style>
 </head>
 	<body>
@@ -118,7 +118,7 @@ body {
 
 		<script src="index.js?v=0.6.29"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83406732,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83406188,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -200,9 +200,6 @@ const engine = new Engine(GODOT_CONFIG);
 				if (current > 0 && total > 0) {
 					statusProgress.value = current;
 					statusProgress.max = total;
-					if (current >= total) {
-						window.__pfSetStatusHidden();
-					}
 				} else {
 					statusProgress.removeAttribute('value');
 					statusProgress.removeAttribute('max');

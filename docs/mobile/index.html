@@ -101,7 +101,7 @@ body {
 	<body>
 <button id="pf-fullscreen-btn" type="button" aria-label="Toggle fullscreen">Full</button>
 <style>#pf-fullscreen-btn{position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:100000;padding:10px 16px;font:600 15px system-ui,sans-serif;color:#fff;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.35);border-radius:8px;touch-action:manipulation;cursor:pointer;}#pf-fullscreen-btn:active{background:rgba(40,40,40,0.85);}</style>
-<script>(function(){var b=document.getElementById("pf-fullscreen-btn");if(!b)return;function fs(){return!!(document.fullscreenElement||document.webkitFullscreenElement);}function go(){var el=document.documentElement;var req=el.requestFullscreen||el.webkitRequestFullscreen;var exitFn=document.exitFullscreen||document.webkitExitFullscreen;if(fs()){if(exitFn)exitFn.call(document);}else if(req)req.call(el);}function sync(){b.textContent=fs()?"Exit":"Full";}b.addEventListener("click",function(e){e.stopPropagation();go();setTimeout(sync,250);});document.addEventListener("fullscreenchange",sync);document.addEventListener("webkitfullscreenchange",sync);sync();})();</script>
+<script>(function(){var b=document.getElementById("pf-fullscreen-btn");if(!b)return;function fs(){return!!(document.fullscreenElement||document.webkitFullscreenElement);}function exitFs(){var exitFn=document.exitFullscreen||document.webkitExitFullscreen;if(exitFn)exitFn.call(document);}function go(){var el=document.documentElement;var req=el.requestFullscreen||el.webkitRequestFullscreen;if(fs()){exitFs();}else if(req)req.call(el);}function sync(){b.textContent=fs()?"Exit":"Full";}b.addEventListener("click",function(e){e.stopPropagation();go();setTimeout(sync,250);});document.addEventListener("fullscreenchange",sync);document.addEventListener("webkitfullscreenchange",sync);document.addEventListener("keydown",function(e){if(e.key==="Escape"&&fs()){exitFs();setTimeout(sync,50);}});sync();})();</script>
 <div id="pf-rotate-gate" style="display:flex;flex-direction:column;position:fixed;inset:0;z-index:99999;background:#000;color:#fff;font:600 22px system-ui,sans-serif;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;">Rotate your phone to landscape<p id="pf-rotate-gate-sub" style="font:400 16px system-ui,sans-serif;margin:16px 0 0;opacity:0.85;">Rotate to landscape to start</p></div>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
@@ -117,9 +117,9 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<script src="index.js?v=0.7.2"></script>
+		<script src="index.js?v=0.7.9"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83496244,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":83644716,"index.wasm":1509558},"focusCanvas":true,"gdextensionLibs":["libspine_godot.web.template_release.wasm32.nothreads.wasm"],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 

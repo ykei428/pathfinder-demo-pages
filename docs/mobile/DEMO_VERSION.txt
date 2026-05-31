@@ -1,3 +1,3 @@
-version=0.7.9
+version=0.7.12
 pack=index.pck
-published_utc=2026-05-28T16:32:16Z
+published_utc=2026-05-31T13:52:52Z

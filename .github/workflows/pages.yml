@@ -12,9 +12,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: read
 
 concurrency:
   group: pages
+  # Do not cancel mid-deploy — cancellation can leave Pages "in progress" and 409 the next run.
   cancel-in-progress: false
 
 jobs:
@@ -37,6 +39,43 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Wait for prior Pages deployment to finish
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const environment = 'github-pages';
+            const maxWaitMs = 8 * 60 * 1000;
+            const pollMs = 15000;
+            const start = Date.now();
+            while (Date.now() - start < maxWaitMs) {
+              const { data: deployments } = await github.rest.repos.listDeployments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                environment,
+                per_page: 5,
+              });
+              let blocked = false;
+              for (const deployment of deployments) {
+                const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  deployment_id: deployment.id,
+                  per_page: 1,
+                });
+                const state = statuses[0]?.state;
+                if (state === 'pending' || state === 'in_progress' || state === 'queued') {
+                  core.info(`Waiting on deployment ${deployment.id} (${state})`);
+                  blocked = true;
+                  break;
+                }
+              }
+              if (!blocked) {
+                core.info('No in-progress Pages deployment; proceeding.');
+                return;
+              }
+              await new Promise((resolve) => setTimeout(resolve, pollMs));
+            }
+            core.setFailed('Timed out waiting for prior GitHub Pages deployment to finish.');
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

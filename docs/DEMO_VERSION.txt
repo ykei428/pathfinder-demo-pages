@@ -1,3 +1,3 @@
-version=1.0.0
-pack=index-v1-0-0-a1541614.pck
-published_utc=2026-07-30T09:58:20Z
+version=1.0.1
+pack=index-v1-0-1-906c88e5.pck
+published_utc=2026-07-30T14:02:52Z
